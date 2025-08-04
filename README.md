@@ -1,0 +1,1 @@
+# mgr_member_communications_sample
