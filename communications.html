@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>マネージャー×部下 コミュニケーションマトリクス</title>
+    <style>
+        body {
+            font-family: 'Hiragino Sans', 'Yu Gothic', sans-serif;
+            margin: 20px;
+            background: #f8f9fa;
+        }
+        .container {
+            max-width: 1600px;
+            margin: 0 auto;
+        }
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+            margin-bottom: 30px;
+        }
+        .matrix-container {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+            overflow-x: auto;
+        }
+        .matrix-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 11px;
+        }
+        .matrix-table th {
+            background: #34495e;
+            color: white;
+            padding: 8px 4px;
+            text-align: center;
+            font-weight: bold;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+        .matrix-table th.row-header {
+            background: #2c3e50;
+            min-width: 100px;
+            text-align: left;
+            position: sticky;
+            left: 0;
+            z-index: 11;
+        }
+        .matrix-table th.col-header {
+            writing-mode: vertical-rl;
+            text-orientation: mixed;
+            min-width: 35px;
+            max-width: 35px;
+        }
+        .matrix-table td {
+            padding: 6px 4px;
+            text-align: center;
+            border: 1px solid #ddd;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-weight: bold;
+            min-width: 35px;
+        }
+        .matrix-table td:hover {
+            transform: scale(1.1);
+            z-index: 5;
+            position: relative;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+        .excellent { background: #2ecc71; color: white; }
+        .good { background: #3498db; color: white; }
+        .normal { background: #f39c12; color: white; }
+        .difficult { background: #e74c3c; color: white; }
+        
+        .row-header-cell {
+            background: #2c3e50 !important;
+            color: white !important;
+            position: sticky;
+            left: 0;
+            z-index: 9;
+        }
+        
+        .detail-panel {
+            background: white;
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+            min-height: 200px;
+        }
+        .detail-title {
+            font-size: 24px;
+            font-weight: bold;
+            color: #2c3e50;
+            margin-bottom: 15px;
+            border-bottom: 3px solid #3498db;
+            padding-bottom: 10px;
+        }
+        .compatibility-level {
+            display: inline-block;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+        .detail-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+        }
+        .communication-style {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            border-left: 4px solid #3498db;
+        }
+        .communication-style h4 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+        }
+        .style-list {
+            list-style: none;
+            padding: 0;
+        }
+        .style-list li {
+            padding: 8px 0;
+            border-bottom: 1px solid #ecf0f1;
+        }
+        .style-list li:last-child {
+            border-bottom: none;
+        }
+        .legend {
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        .legend-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+        }
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .legend-color {
+            width: 20px;
+            height: 20px;
+            border-radius: 4px;
+        }
+        .instructions {
+            background: #e8f4f8;
+            border: 1px solid #3498db;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 20px;
+            text-align: center;
+            color: #2c3e50;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>マネージャー×部下 コミュニケーションマトリクス</h1>
+        
+        <div class="instructions">
+            <strong>使い方:</strong> マトリクスのセルをクリックすると、その組み合わせの詳細なコミュニケーションスタイルが下に表示されます
+        </div>
+
+        <div class="legend">
+            <h3>相性レベル</h3>
+            <div class="legend-grid">
+                <div class="legend-item">
+                    <div class="legend-color excellent"></div>
+                    <span><strong>◎ 抜群:</strong> 自然にコミュニケーションが成立、高い成果が期待できる</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color good"></div>
+                    <span><strong>○ 良好:</strong> スムーズなコミュニケーション、相互理解しやすい</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color normal"></div>
+                    <span><strong>△ 普通:</strong> 工夫次第で良い関係を築ける、調整が必要</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color difficult"></div>
+                    <span><strong>× 困難:</strong> 価値観の違いが大きく、特別な配慮が必要</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="matrix-container">
+            <table class="matrix-table">
+                <thead>
+                    <tr>
+                        <th class="row-header">マネージャー＼部下</th>
+                        <th class="col-header">模範生型</th>
+                        <th class="col-header">自律実行型</th>
+                        <th class="col-header">職人型</th>
+                        <th class="col-header">チームワーカー型</th>
+                        <th class="col-header">積極提案型</th>
+                        <th class="col-header">慎重型</th>
+                        <th class="col-header">学習型</th>
+                        <th class="col-header">指示待ち型</th>
+                        <th class="col-header">問題解決型</th>
+                        <th class="col-header">調整役型</th>
+                        <th class="col-header">独立型</th>
+                        <th class="col-header">不安型</th>
+                    </tr>
+                </thead>
+                <tbody id="matrixBody">
+                </tbody>
+            </table>
+        </div>
+
+        <div class="detail-panel" id="detailPanel">
+            <div class="detail-title">組み合わせを選択してください</div>
+            <p>上のマトリクスのセルをクリックすると、その組み合わせの詳細なコミュニケーションスタイルが表示されます。</p>
+        </div>
+    </div>
+
+    <script>
+        const managerTypes = [
+            '密着指導型', '委譲成長型', '結果重視型', '協調型', '効率追求型', '安定管理型',
+            'プレイヤー型', '火消し型', 'ビジョン型', '調整型', '保護型', '完璧主義型'
+        ];
+
+        const subordinateTypes = [
+            '模範生型', '自律実行型', '職人型', 'チームワーカー型', '積極提案型', '慎重型',
+            '学習型', '指示待ち型', '問題解決型', '調整役型', '独立型', '不安型'
+        ];
+
+        // 相性マトリクス (4=◎, 3=○, 2=△, 1=×)
+        const compatibilityMatrix = [
+            [4, 3, 2, 4, 3, 4, 4, 4, 3, 4, 2, 4], // 密着指導型
+            [3, 4, 3, 3, 4, 3, 4, 2, 4, 3, 3, 2], // 委譲成長型
+            [2, 4, 4, 2, 3, 2, 2, 3, 4, 2, 4, 1], // 結果重視型
+            [4, 3, 2, 4, 4, 3, 3, 3, 3, 4, 2, 3], // 協調型
+            [2, 4, 3, 2, 4, 2, 3, 2, 4, 2, 3, 2], // 効率追求型
+            [4, 2, 3, 3, 2, 4, 3, 4, 2, 3, 2, 4], // 安定管理型
+            [3, 3, 4, 3, 3, 3, 4, 3, 3, 3, 3, 3], // プレイヤー型
+            [2, 3, 3, 2, 3, 2, 2, 2, 4, 2, 3, 2], // 火消し型
+            [3, 4, 2, 3, 4, 2, 4, 2, 3, 3, 3, 2], // ビジョン型
+            [3, 3, 2, 4, 3, 3, 3, 3, 3, 4, 2, 3], // 調整型
+            [3, 3, 3, 4, 3, 4, 3, 3, 2, 4, 2, 4], // 保護型
+            [3, 2, 3, 2, 2, 4, 3, 3, 2, 2, 2, 3]  // 完璧主義型
+        ];
+
+        const compatibilitySymbols = { 4: '◎', 3: '○', 2: '△', 1: '×' };
+        const compatibilityClasses = { 4: 'excellent', 3: 'good', 2: 'normal', 1: 'difficult' };
+        const compatibilityTexts = { 4: '抜群', 3: '良好', 2: '普通', 1: '困難' };
+
+        // コミュニケーションスタイルのデータベース
+        const communicationStyles = {
+            // 例：密着指導型 × 模範生型
+            '0-0': {
+                compatibility: 4,
+                managerStyle: [
+                    '詳細な進捗確認を定期的に実施',
+                    '丁寧なフィードバックと成長支援',
+                    '事前相談を積極的に受け入れ',
+                    'こまめな声かけでモチベーション維持',
+                    '長期的な育成プランを共有'
+                ],
+                subordinateStyle: [
+                    '背景・経緯を含む詳細な報告',
+                    '事前相談を欠かさない',
+                    'こまめな進捗共有',
+                    '積極的な質問と確認',
+                    '改善提案も積極的に行う'
+                ],
+                tips: '理想的な組み合わせ。お互いの期待値が一致し、高い成果と成長が期待できる。'
+            },
+            // 他の143パターンも同様に定義...
+            // ここでは代表的なパターンをいくつか実装
+            '1-1': {
+                compatibility: 4,
+                managerStyle: [
+                    '大枠の方向性を示して任せる',
+                    '結果重視で過程への干渉は最小限',
+                    '提案や改善案を積極的に受け入れ',
+                    '失敗を学習機会として捉える',
+                    '新しい挑戦を推奨・支援'
+                ],
+                subordinateStyle: [
+                    '要点を押さえた効率的な報告',
+                    '自己判断による能動的な行動',
+                    '改善提案を積極的に実施',
+                    '必要時のみの相談',
+                    '結果にコミットした行動'
+                ],
+                tips: '自律性とビジョンが合致する理想的な関係。イノベーションが生まれやすい環境。'
+            },
+            '2-2': {
+                compatibility: 4,
+                managerStyle: [
+                    '成果・アウトプットのみを重視',
+                    '手段・プロセスには干渉しない',
+                    '効率的で簡潔なコミュニケーション',
+                    '目標設定と評価に集中',
+                    '余計な説明は求めない'
+                ],
+                subordinateStyle: [
+                    '結果中心の簡潔な報告',
+                    '黙々と質の高い成果を創出',
+                    '最小限のコミュニケーション',
+                    '技術的な相談時のみ発信',
+                    '確実な成果で信頼を獲得'
+                ],
+                tips: 'お互いに余計な干渉を嫌う者同士。効率的で質の高い成果が期待できる。'
+            }
+        };
+
+        function createMatrix() {
+            const tbody = document.getElementById('matrixBody');
+            
+            for (let i = 0; i < managerTypes.length; i++) {
+                const row = document.createElement('tr');
+                
+                // 行ヘッダー
+                const headerCell = document.createElement('td');
+                headerCell.className = 'row-header-cell';
+                headerCell.textContent = managerTypes[i];
+                row.appendChild(headerCell);
+                
+                // データセル
+                for (let j = 0; j < subordinateTypes.length; j++) {
+                    const cell = document.createElement('td');
+                    const value = compatibilityMatrix[i][j];
+                    cell.textContent = compatibilitySymbols[value];
+                    cell.className = compatibilityClasses[value];
+                    cell.onclick = () => showDetail(i, j, value);
+                    row.appendChild(cell);
+                }
+                
+                tbody.appendChild(row);
+            }
+        }
+
+        function showDetail(managerIndex, subordinateIndex, compatibility) {
+            const detailPanel = document.getElementById('detailPanel');
+            const key = `${managerIndex}-${subordinateIndex}`;
+            
+            // デフォルトのコミュニケーションスタイルを生成
+            const style = communicationStyles[key] || generateDefaultStyle(managerIndex, subordinateIndex, compatibility);
+            
+            const compatibilityClass = compatibilityClasses[compatibility];
+            const compatibilityText = compatibilityTexts[compatibility];
+            
+            detailPanel.innerHTML = `
+                <div class="detail-title">
+                    ${managerTypes[managerIndex]} × ${subordinateTypes[subordinateIndex]}
+                </div>
+                <div class="compatibility-level ${compatibilityClass}">
+                    相性レベル: ${compatibilitySymbols[compatibility]} ${compatibilityText}
+                </div>
+                <div class="detail-content">
+                    <div class="communication-style">
+                        <h4>📋 マネージャー側のアプローチ</h4>
+                        <ul class="style-list">
+                            ${style.managerStyle.map(item => `<li>${item}</li>`).join('')}
+                        </ul>
+                    </div>
+                    <div class="communication-style">
+                        <h4>👤 部下側の対応スタイル</h4>
+                        <ul class="style-list">
+                            ${style.subordinateStyle.map(item => `<li>${item}</li>`).join('')}
+                        </ul>
+                    </div>
+                </div>
+                <div class="communication-style" style="margin-top: 20px;">
+                    <h4>💡 相性活用のコツ</h4>
+                    <p>${style.tips}</p>
+                </div>
+            `;
+        }
+
+        function generateDefaultStyle(managerIndex, subordinateIndex, compatibility) {
+            // マネージャーと部下の特徴に基づいてデフォルトスタイルを生成
+            const managerCharacteristics = [
+                { style: ['詳細管理', '頻繁確認', '事前相談重視', '丁寧指導', '安定重視'] }, // 密着指導型
+                { style: ['大枠設定', '自主性尊重', '結果重視', '挑戦推奨', '長期視点'] }, // 委譲成長型
+                { style: ['成果重視', '効率優先', '簡潔対応', '手段不問', '目標明確'] }, // 結果重視型
+                { style: ['チーム重視', '合意形成', '情報共有', '協力促進', '調和重視'] }, // 協調型
+                { style: ['効率最優先', '迅速判断', '無駄排除', '革新推進', '時間重視'] }, // 効率追求型
+                { style: ['安全重視', 'リスク管理', '確実性重視', '品質管理', '慎重判断'] }, // 安定管理型
+                { style: ['実務指導', '現場重視', '技術指導', '共同作業', '経験重視'] }, // プレイヤー型
+                { style: ['緊急対応', '問題解決', '迅速判断', 'トラブル対応', '柔軟対応'] }, // 火消し型
+                { style: ['ビジョン共有', '方向性明示', 'モチベーション', '長期目標', '理想追求'] }, // ビジョン型
+                { style: ['調整重視', '関係構築', '合意形成', '橋渡し', 'バランス重視'] }, // 調整型
+                { style: ['部下保護', '安心提供', 'サポート重視', '負担軽減', '味方意識'] }, // 保護型
+                { style: ['完璧要求', '品質重視', '細部確認', '基準厳格', '妥協なし'] }  // 完璧主義型
+            ];
+
+            const subordinateCharacteristics = [
+                { style: ['詳細報告', '事前相談', '頻繁連絡', '積極質問', '先回り行動'] }, // 模範生型
+                { style: ['要点報告', '自己判断', '効率重視', '積極提案', '能動行動'] }, // 自律実行型
+                { style: ['結果重視', '最小連絡', '技術重視', '黙々作業', '事後報告'] }, // 職人型
+                { style: ['チーム報告', 'チーム相談', '情報共有', 'チーム意見', '協調行動'] }, // チームワーカー型
+                { style: ['改善提案', 'アイデア相談', '積極発信', '建設的意見', '挑戦行動'] }, // 積極提案型
+                { style: ['リスク報告', '事前確認', '安全重視', '慎重質問', '確実行動'] }, // 慎重型
+                { style: ['学習報告', '教育相談', '成長発信', '積極質問', '学習行動'] }, // 学習型
+                { style: ['指示確認', '承認待ち', '受身対応', '確認質問', '忠実実行'] }, // 指示待ち型
+                { style: ['解決提案', '課題相談', '問題発信', '改善質問', '解決行動'] }, // 問題解決型
+                { style: ['関係報告', '調整相談', 'バランス発信', '配慮質問', '調整行動'] }, // 調整役型
+                { style: ['結果報告', '事後連絡', '独立作業', '自己判断', '単独行動'] }, // 独立型
+                { style: ['不安報告', '頻繁相談', '確認発信', '承認質問', '慎重行動'] }  // 不安型
+            ];
+
+            let tips = '';
+            if (compatibility === 4) {
+                tips = '非常に相性が良く、自然でスムーズなコミュニケーションが期待できます。お互いの強みを活かして高い成果を目指しましょう。';
+            } else if (compatibility === 3) {
+                tips = '良好な相性です。お互いの特徴を理解して、効果的なコミュニケーションを心がけることで良い結果が得られます。';
+            } else if (compatibility === 2) {
+                tips = '工夫が必要な組み合わせです。お互いの違いを認識し、歩み寄りの姿勢でコミュニケーションを調整していきましょう。';
+            } else {
+                tips = '価値観の違いが大きい組み合わせです。お互いの立場を理解し、特別な配慮と工夫でコミュニケーションを改善していく必要があります。';
+            }
+
+            return {
+                compatibility: compatibility,
+                managerStyle: managerCharacteristics[managerIndex].style,
+                subordinateStyle: subordinateCharacteristics[subordinateIndex].style,
+                tips: tips
+            };
+        }
+
+        // 詳細データをさらに追加
+        Object.assign(communicationStyles, {
+            '0-7': { // 密着指導型 × 指示待ち型
+                compatibility: 4,
+                managerStyle: [
+                    '明確で具体的な指示を提供',
+                    'ステップバイステップの指導',
+                    '頻繁な確認とフォローアップ',
+                    '安心感を与える丁寧な説明',
+                    '段階的な責任範囲の拡大'
+                ],
+                subordinateStyle: [
+                    '指示内容の正確な理解と確認',
+                    '不明点は遠慮なく質問',
+                    '指示通りの確実な実行',
+                    '完了報告を忘れずに',
+                    '次の指示を待つ姿勢'
+                ],
+                tips: '指示の明確さと従順さが完璧にマッチ。安定した成果と着実な成長が期待できる。'
+            },
+            '1-4': { // 委譲成長型 × 積極提案型
+                compatibility: 4,
+                managerStyle: [
+                    '提案を積極的に受け入れ評価',
+                    '失敗を恐れない環境づくり',
+                    'チャレンジ機会の積極的提供',
+                    '長期的な視点での成長支援',
+                    'アイデアの実現をサポート'
+                ],
+                subordinateStyle: [
+                    '改善案と実行計画をセットで提案',
+                    '新しい取り組みへの積極的挑戦',
+                    '失敗からの学習と次への活用',
+                    'チーム全体への貢献意識',
+                    '継続的な改善マインド'
+                ],
+                tips: '創造性と成長意欲が最大限発揮される組み合わせ。イノベーションの源泉となる。'
+            },
+            '2-10': { // 結果重視型 × 独立型
+                compatibility: 4,
+                managerStyle: [
+                    '目標設定のみで手段は完全委譲',
+                    '成果評価に集中',
+                    '余計な干渉は一切しない',
+                    '結果さえ出れば高評価',
+                    'プロセスへの口出しなし'
+                ],
+                subordinateStyle: [
+                    '結果のみのシンプルな報告',
+                    '自分なりの方法で完遂',
+                    '最小限のコミュニケーション',
+                    '独立した判断と実行',
+                    '確実な成果の創出'
+                ],
+                tips: 'お互いに干渉を嫌う者同士の理想的な関係。高い成果と満足度が期待できる。'
+            }
+        });
+
+        createMatrix();
+    </script>
+</body>
+</html>
