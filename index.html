@@ -3,52 +3,73 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>マネージャー×部下 統合4象限マッピング（改良版）</title>
+    <title>統合コミュニケーション分析ツール</title>
     <style>
         body {
             font-family: 'Hiragino Sans', 'Yu Gothic', sans-serif;
-            margin: 20px;
+            margin: 0;
+            padding: 20px;
             background: #f8f9fa;
         }
         .container {
-            max-width: 1200px;
+            max-width: 1600px;
             margin: 0 auto;
         }
         h1 {
             text-align: center;
             color: #2c3e50;
-            margin-bottom: 40px;
+            margin-bottom: 30px;
+        }
+        .main-layout {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+        .section {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        .section h2 {
+            color: #2c3e50;
+            margin-top: 0;
+            margin-bottom: 20px;
+            font-size: 18px;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 8px;
         }
         .controls {
             background: white;
             border-radius: 8px;
-            padding: 20px;
+            padding: 15px;
             box-shadow: 0 2px 8px rgba(0,0,0,0.1);
             margin-bottom: 20px;
             display: flex;
-            gap: 20px;
+            gap: 15px;
             align-items: center;
             flex-wrap: wrap;
         }
         .control-group {
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 8px;
         }
         select {
-            padding: 8px 12px;
+            padding: 6px 10px;
             border: 1px solid #ddd;
             border-radius: 4px;
-            font-size: 14px;
+            font-size: 13px;
         }
         .toggle-btn {
-            padding: 8px 16px;
+            padding: 6px 12px;
             background: #3498db;
             color: white;
             border: none;
             border-radius: 4px;
             cursor: pointer;
-            font-size: 14px;
+            font-size: 13px;
         }
         .toggle-btn:hover {
             background: #2980b9;
@@ -56,47 +77,37 @@
         .toggle-btn.active {
             background: #e74c3c;
         }
+        
+        /* 4象限マッピング */
         .quadrant-container {
-            background: white;
-            border-radius: 12px;
-            padding: 40px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-            margin-bottom: 30px;
             position: relative;
-            height: 700px;
+            height: 500px;
+            border: 2px solid #34495e;
         }
         .axis-labels {
             position: absolute;
             font-weight: bold;
             color: #2c3e50;
-            font-size: 16px;
+            font-size: 14px;
         }
         .axis-vertical {
-            top: 20px;
+            top: -25px;
             left: 50%;
             transform: translateX(-50%);
         }
         .axis-horizontal {
-            bottom: 20px;
-            right: 20px;
+            bottom: -25px;
+            right: 0;
         }
         .axis-vertical-bottom {
-            bottom: 20px;
+            bottom: -25px;
             left: 50%;
             transform: translateX(-50%);
         }
         .axis-horizontal-left {
             top: 50%;
-            left: 20px;
+            left: -80px;
             transform: translateY(-50%) rotate(-90deg);
-        }
-        .quadrant-grid {
-            position: absolute;
-            top: 60px;
-            left: 60px;
-            right: 60px;
-            bottom: 60px;
-            border: 2px solid #34495e;
         }
         .quadrant {
             position: absolute;
@@ -105,53 +116,25 @@
             border: 1px solid #bdc3c7;
             box-sizing: border-box;
         }
-        .q1 {
-            top: 0;
-            right: 0;
-            background: rgba(52, 152, 219, 0.03);
-        }
-        .q2 {
-            top: 0;
-            left: 0;
-            background: rgba(46, 204, 113, 0.03);
-        }
-        .q3 {
-            bottom: 0;
-            left: 0;
-            background: rgba(243, 156, 18, 0.03);
-        }
-        .q4 {
-            bottom: 0;
-            right: 0;
-            background: rgba(231, 76, 60, 0.03);
-        }
+        .q1 { top: 0; right: 0; background: rgba(52, 152, 219, 0.03); }
+        .q2 { top: 0; left: 0; background: rgba(46, 204, 113, 0.03); }
+        .q3 { bottom: 0; left: 0; background: rgba(243, 156, 18, 0.03); }
+        .q4 { bottom: 0; right: 0; background: rgba(231, 76, 60, 0.03); }
         .quadrant-label {
             position: absolute;
             font-weight: bold;
-            font-size: 12px;
+            font-size: 11px;
             color: #7f8c8d;
             pointer-events: none;
         }
-        .label-q1 {
-            top: 10px;
-            right: 10px;
-        }
-        .label-q2 {
-            top: 10px;
-            left: 10px;
-        }
-        .label-q3 {
-            bottom: 10px;
-            left: 10px;
-        }
-        .label-q4 {
-            bottom: 10px;
-            right: 10px;
-        }
+        .label-q1 { top: 8px; right: 8px; }
+        .label-q2 { top: 8px; left: 8px; }
+        .label-q3 { bottom: 8px; left: 8px; }
+        .label-q4 { bottom: 8px; right: 8px; }
         .person-point {
             position: absolute;
-            width: 14px;
-            height: 14px;
+            width: 12px;
+            height: 12px;
             border-radius: 50%;
             cursor: pointer;
             transition: all 0.2s;
@@ -159,27 +142,27 @@
             box-shadow: 0 2px 4px rgba(0,0,0,0.3);
         }
         .person-point:hover {
-            transform: scale(1.5);
+            transform: scale(1.4);
             z-index: 10;
         }
         .person-point.selected {
-            transform: scale(1.8);
+            transform: scale(1.6);
             z-index: 15;
             border-width: 3px;
             box-shadow: 0 4px 12px rgba(0,0,0,0.5);
         }
         .person-label {
             position: absolute;
-            font-size: 10px;
+            font-size: 9px;
             font-weight: bold;
             color: #2c3e50;
             background: rgba(255,255,255,0.95);
-            padding: 2px 6px;
-            border-radius: 4px;
+            padding: 2px 5px;
+            border-radius: 3px;
             box-shadow: 0 1px 3px rgba(0,0,0,0.2);
             pointer-events: none;
             white-space: nowrap;
-            transform: translate(-50%, -25px);
+            transform: translate(-50%, -20px);
             opacity: 0;
             transition: opacity 0.2s;
         }
@@ -227,232 +210,301 @@
             height: 2px;
             opacity: 0.5;
         }
-        .legend {
-            background: white;
-            border-radius: 8px;
-            padding: 20px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-            margin-bottom: 20px;
+        
+        /* マトリクス */
+        .matrix-container {
+            overflow: auto;
+            max-height: 500px;
         }
-        .legend-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 15px;
-            margin-top: 15px;
+        .matrix-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 10px;
         }
-        .legend-item {
-            display: flex;
-            align-items: center;
-            gap: 10px;
+        .matrix-table th {
+            background: #34495e;
+            color: white;
+            padding: 6px 3px;
+            text-align: center;
+            font-weight: bold;
+            position: sticky;
+            top: 0;
+            z-index: 10;
         }
-        .legend-color {
-            width: 20px;
-            height: 20px;
-            border-radius: 50%;
+        .matrix-table th.row-header {
+            background: #2c3e50;
+            min-width: 80px;
+            text-align: left;
+            position: sticky;
+            left: 0;
+            z-index: 11;
         }
-        .legend-line {
-            width: 30px;
-            height: 4px;
-            border-radius: 2px;
+        .matrix-table th.col-header {
+            writing-mode: vertical-rl;
+            text-orientation: mixed;
+            min-width: 25px;
+            max-width: 25px;
         }
+        .matrix-table td {
+            padding: 4px 3px;
+            text-align: center;
+            border: 1px solid #ddd;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-weight: bold;
+            min-width: 25px;
+        }
+        .matrix-table td:hover {
+            transform: scale(1.1);
+            z-index: 5;
+            position: relative;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+        }
+        .matrix-table td.selected {
+            transform: scale(1.2);
+            z-index: 8;
+            position: relative;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+            border: 2px solid #f39c12;
+        }
+        .excellent { background: #2ecc71; color: white; }
+        .good { background: #3498db; color: white; }
+        .normal { background: #f39c12; color: white; }
+        .difficult { background: #e74c3c; color: white; }
+        .row-header-cell {
+            background: #2c3e50 !important;
+            color: white !important;
+            position: sticky;
+            left: 0;
+            z-index: 9;
+        }
+        
+        /* 詳細パネル */
         .detail-panel {
             background: white;
             border-radius: 12px;
-            padding: 25px;
+            padding: 20px;
             box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-            margin-bottom: 30px;
-            display: none;
+            grid-column: 1 / -1;
         }
         .detail-title {
-            font-size: 20px;
+            font-size: 18px;
             font-weight: bold;
             color: #2c3e50;
             margin-bottom: 15px;
         }
-        .compatibility-info {
+        .detail-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+        .communication-style {
             background: #f8f9fa;
             padding: 15px;
             border-radius: 8px;
-            margin-bottom: 20px;
+            border-left: 4px solid #3498db;
         }
-        .distance-info {
-            display: inline-block;
-            background: #ecf0f1;
-            padding: 8px 12px;
-            border-radius: 6px;
-            margin-left: 10px;
+        .communication-style h4 {
+            color: #2c3e50;
+            margin-bottom: 10px;
             font-size: 14px;
+        }
+        .style-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        .style-list li {
+            padding: 4px 0;
+            border-bottom: 1px solid #ecf0f1;
+            font-size: 12px;
+        }
+        .style-list li:last-child {
+            border-bottom: none;
+        }
+        .compatibility-info {
+            background: #ecf0f1;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+        .compatibility-score {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        
+        /* レスポンシブ */
+        @media (max-width: 1200px) {
+            .main-layout {
+                grid-template-columns: 1fr;
+            }
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>マネージャー×部下 統合4象限マッピング（改良版）</h1>
+        <h1>統合コミュニケーション分析ツール</h1>
         
         <div class="controls">
             <div class="control-group">
-                <label>マネージャー選択:</label>
+                <label>マネージャー:</label>
                 <select id="managerSelect">
                     <option value="">選択してください</option>
                 </select>
             </div>
             <div class="control-group">
-                <label>部下選択:</label>
+                <label>部下:</label>
                 <select id="subordinateSelect">
                     <option value="">選択してください</option>
                 </select>
             </div>
-            <button class="toggle-btn" id="showAllBtn" onclick="toggleShowAll()">全タイプ表示</button>
-            <button class="toggle-btn" id="compatibilityBtn" onclick="toggleCompatibilityMode()">相性表示モード</button>
+            <button class="toggle-btn" id="showAllBtn" onclick="toggleShowAll()">全表示</button>
+            <button class="toggle-btn" id="syncBtn" onclick="toggleSync()">連動表示</button>
         </div>
         
-        <div class="legend">
-            <h3>凡例と軸の説明</h3>
-            <div class="legend-grid">
-                <div class="legend-item">
-                    <div class="legend-color manager-point"></div>
-                    <span><strong>青丸:</strong> マネージャータイプ</span>
-                </div>
-                <div class="legend-item">
-                    <div class="legend-color subordinate-point"></div>
-                    <span><strong>赤丸:</strong> 部下タイプ</span>
-                </div>
-                <div class="legend-item">
-                    <div class="legend-line compatibility-excellent"></div>
-                    <span><strong>緑線:</strong> 抜群の相性</span>
-                </div>
-                <div class="legend-item">
-                    <div class="legend-line compatibility-good"></div>
-                    <span><strong>青線:</strong> 良好な相性</span>
-                </div>
-                <div class="legend-item">
-                    <div class="legend-line compatibility-normal"></div>
-                    <span><strong>黄線:</strong> 普通の相性</span>
-                </div>
-                <div class="legend-item">
-                    <div class="legend-line compatibility-difficult"></div>
-                    <span><strong>赤線:</strong> 困難な相性</span>
+        <div class="main-layout">
+            <!-- 4象限マッピング -->
+            <div class="section">
+                <h2>📊 4象限マッピング</h2>
+                <div class="quadrant-container">
+                    <div class="axis-labels axis-vertical">コミュニケーション密度：高</div>
+                    <div class="axis-labels axis-vertical-bottom">コミュニケーション密度：低</div>
+                    <div class="axis-labels axis-horizontal-left">上司主導</div>
+                    <div class="axis-labels axis-horizontal">部下主導</div>
+                    
+                    <div class="quadrant q1">
+                        <div class="quadrant-label label-q1">密接委譲型</div>
+                    </div>
+                    <div class="quadrant q2">
+                        <div class="quadrant-label label-q2">密接指導型</div>
+                    </div>
+                    <div class="quadrant q3">
+                        <div class="quadrant-label label-q3">距離指導型</div>
+                    </div>
+                    <div class="quadrant q4">
+                        <div class="quadrant-label label-q4">距離委譲型</div>
+                    </div>
+                    
+                    <!-- マネージャーの点 -->
+                    <div class="person-point manager-point" style="top: 20%; right: 25%;" data-type="manager" data-name="委譲成長型" onclick="selectFromQuadrant(this)">
+                        <div class="person-label">委譲成長型</div>
+                    </div>
+                    <div class="person-point manager-point" style="top: 30%; right: 35%;" data-type="manager" data-name="協調型" onclick="selectFromQuadrant(this)">
+                        <div class="person-label">協調型</div>
+                    </div>
+                    <div class="person-point manager-point" style="top: 15%; right: 30%;" data-type="manager" data-name="ビジョン型" onclick="selectFromQuadrant(this)">
+                        <div class="person-label">ビジョン型</div>
+                    </div>
+                    <div class="person-point manager-point" style="top: 35%; right: 15%;" data-type="manager" data-name="プレイヤー型" onclick="selectFromQuadrant(this)">
+                        <div class="person-label">プレイヤー型</div>
+                    </div>
+                    
+                    <div class="person-point manager-point" style="top: 20%; left: 25%;" data-type="manager" data-name="密着指導型" onclick="selectFromQuadrant(this)">
+                        <div class="person-label">密着指導型</div>
+                    </div>
+                    <div class="person-point manager-point" style="top: 30%; left: 35%;" data-type="manager" data-name="安定管理型" onclick="selectFromQuadrant(this)">
+                        <div class="person-label">安定管理型</div>
+                    </div>
+                    <div class="person-point manager-point" style="top: 10%; left: 20%;" data-type="manager" data-name="完璧主義型" onclick="selectFromQuadrant(this)">
+                        <div class="person-label">完璧主義型</div>
+                    </div>
+                    <div class="person-point manager-point" style="top: 25%; left: 15%;" data-type="manager" data-name="保護型" onclick="selectFromQuadrant(this)">
+                        <div class="person-label">保護型</div>
+                    </div>
+                    
+                    <div class="person-point manager-point" style="bottom: 25%; left: 30%;" data-type="manager" data-name="効率追求型" onclick="selectFromQuadrant(this)">
+                        <div class="person-label">効率追求型</div>
+                    </div>
+                    <div class="person-point manager-point" style="bottom: 35%; left: 20%;" data-type="manager" data-name="火消し型" onclick="selectFromQuadrant(this)">
+                        <div class="person-label">火消し型</div>
+                    </div>
+                    
+                    <div class="person-point manager-point" style="bottom: 20%; right: 25%;" data-type="manager" data-name="結果重視型" onclick="selectFromQuadrant(this)">
+                        <div class="person-label">結果重視型</div>
+                    </div>
+                    <div class="person-point manager-point" style="bottom: 30%; right: 35%;" data-type="manager" data-name="調整型" onclick="selectFromQuadrant(this)">
+                        <div class="person-label">調整型</div>
+                    </div>
+
+                    <!-- 部下の点 -->
+                    <div class="person-point subordinate-point" style="top: 25%; right: 20%;" data-type="subordinate" data-name="積極提案型" onclick="selectFromQuadrant(this)">
+                        <div class="person-label">積極提案型</div>
+                    </div>
+                    <div class="person-point subordinate-point" style="top: 35%; right: 10%;" data-type="subordinate" data-name="問題解決型" onclick="selectFromQuadrant(this)">
+                        <div class="person-label">問題解決型</div>
+                    </div>
+                    <div class="person-point subordinate-point" style="top: 15%; right: 35%;" data-type="subordinate" data-name="自律実行型" onclick="selectFromQuadrant(this)">
+                        <div class="person-label">自律実行型</div>
+                    </div>
+                    
+                    <div class="person-point subordinate-point" style="top: 15%; left: 30%;" data-type="subordinate" data-name="模範生型" onclick="selectFromQuadrant(this)">
+                        <div class="person-label">模範生型</div>
+                    </div>
+                    <div class="person-point subordinate-point" style="top: 25%; left: 20%;" data-type="subordinate" data-name="学習型" onclick="selectFromQuadrant(this)">
+                        <div class="person-label">学習型</div>
+                    </div>
+                    <div class="person-point subordinate-point" style="top: 30%; left: 35%;" data-type="subordinate" data-name="チームワーカー型" onclick="selectFromQuadrant(this)">
+                        <div class="person-label">チームワーカー型</div>
+                    </div>
+                    <div class="person-point subordinate-point" style="top: 20%; left: 35%;" data-type="subordinate" data-name="調整役型" onclick="selectFromQuadrant(this)">
+                        <div class="person-label">調整役型</div>
+                    </div>
+                    <div class="person-point subordinate-point" style="top: 10%; left: 15%;" data-type="subordinate" data-name="不安型" onclick="selectFromQuadrant(this)">
+                        <div class="person-label">不安型</div>
+                    </div>
+                    
+                    <div class="person-point subordinate-point" style="bottom: 20%; left: 25%;" data-type="subordinate" data-name="指示待ち型" onclick="selectFromQuadrant(this)">
+                        <div class="person-label">指示待ち型</div>
+                    </div>
+                    <div class="person-point subordinate-point" style="bottom: 30%; left: 35%;" data-type="subordinate" data-name="慎重型" onclick="selectFromQuadrant(this)">
+                        <div class="person-label">慎重型</div>
+                    </div>
+                    
+                    <div class="person-point subordinate-point" style="bottom: 25%; right: 30%;" data-type="subordinate" data-name="職人型" onclick="selectFromQuadrant(this)">
+                        <div class="person-label">職人型</div>
+                    </div>
+                    <div class="person-point subordinate-point" style="bottom: 35%; right: 20%;" data-type="subordinate" data-name="独立型" onclick="selectFromQuadrant(this)">
+                        <div class="person-label">独立型</div>
+                    </div>
                 </div>
             </div>
-            <p><strong>軸の説明:</strong> 縦軸=コミュニケーション密度（低↔高）、横軸=主導権（上司主導↔部下主導）</p>
-        </div>
-
-        <div class="quadrant-container">
-            <div class="axis-labels axis-vertical">コミュニケーション密度：高</div>
-            <div class="axis-labels axis-vertical-bottom">コミュニケーション密度：低</div>
-            <div class="axis-labels axis-horizontal-left">上司主導</div>
-            <div class="axis-labels axis-horizontal">部下主導</div>
             
-            <div class="quadrant-grid">
-                <div class="quadrant q1">
-                    <div class="quadrant-label label-q1">第1象限：密接委譲型</div>
-                </div>
-                <div class="quadrant q2">
-                    <div class="quadrant-label label-q2">第2象限：密接指導型</div>
-                </div>
-                <div class="quadrant q3">
-                    <div class="quadrant-label label-q3">第3象限：距離指導型</div>
-                </div>
-                <div class="quadrant q4">
-                    <div class="quadrant-label label-q4">第4象限：距離委譲型</div>
-                </div>
-                
-                <!-- マネージャーの点（新しい軸で再配置） -->
-                <!-- 第1象限：密接委譲型 - 高密度コミュニケーション×部下主導 -->
-                <div class="person-point manager-point" style="top: 20%; right: 25%;" data-type="manager" data-name="委譲成長型" onclick="selectPerson(this)">
-                    <div class="person-label">委譲成長型(M)</div>
-                </div>
-                <div class="person-point manager-point" style="top: 30%; right: 35%;" data-type="manager" data-name="協調型" onclick="selectPerson(this)">
-                    <div class="person-label">協調型(M)</div>
-                </div>
-                <div class="person-point manager-point" style="top: 15%; right: 30%;" data-type="manager" data-name="ビジョン型" onclick="selectPerson(this)">
-                    <div class="person-label">ビジョン型(M)</div>
-                </div>
-                <div class="person-point manager-point" style="top: 35%; right: 15%;" data-type="manager" data-name="プレイヤー型" onclick="selectPerson(this)">
-                    <div class="person-label">プレイヤー型(M)</div>
-                </div>
-                
-                <!-- 第2象限：密接指導型 - 高密度コミュニケーション×上司主導 -->
-                <div class="person-point manager-point" style="top: 20%; left: 25%;" data-type="manager" data-name="密着指導型" onclick="selectPerson(this)">
-                    <div class="person-label">密着指導型(M)</div>
-                </div>
-                <div class="person-point manager-point" style="top: 30%; left: 35%;" data-type="manager" data-name="安定管理型" onclick="selectPerson(this)">
-                    <div class="person-label">安定管理型(M)</div>
-                </div>
-                <div class="person-point manager-point" style="top: 10%; left: 20%;" data-type="manager" data-name="完璧主義型" onclick="selectPerson(this)">
-                    <div class="person-label">完璧主義型(M)</div>
-                </div>
-                <div class="person-point manager-point" style="top: 25%; left: 15%;" data-type="manager" data-name="保護型" onclick="selectPerson(this)">
-                    <div class="person-label">保護型(M)</div>
-                </div>
-                
-                <!-- 第3象限：距離指導型 - 低密度コミュニケーション×上司主導 -->
-                <div class="person-point manager-point" style="bottom: 25%; left: 30%;" data-type="manager" data-name="効率追求型" onclick="selectPerson(this)">
-                    <div class="person-label">効率追求型(M)</div>
-                </div>
-                <div class="person-point manager-point" style="bottom: 35%; left: 20%;" data-type="manager" data-name="火消し型" onclick="selectPerson(this)">
-                    <div class="person-label">火消し型(M)</div>
-                </div>
-                
-                <!-- 第4象限：距離委譲型 - 低密度コミュニケーション×部下主導 -->
-                <div class="person-point manager-point" style="bottom: 20%; right: 25%;" data-type="manager" data-name="結果重視型" onclick="selectPerson(this)">
-                    <div class="person-label">結果重視型(M)</div>
-                </div>
-                <div class="person-point manager-point" style="bottom: 30%; right: 35%;" data-type="manager" data-name="調整型" onclick="selectPerson(this)">
-                    <div class="person-label">調整型(M)</div>
-                </div>
-
-                <!-- 部下の点（新しい軸で再配置） -->
-                <!-- 第1象限：密接委譲型 - 高密度コミュニケーション×部下主導 -->
-                <div class="person-point subordinate-point" style="top: 25%; right: 20%;" data-type="subordinate" data-name="積極提案型" onclick="selectPerson(this)">
-                    <div class="person-label">積極提案型(S)</div>
-                </div>
-                <div class="person-point subordinate-point" style="top: 35%; right: 10%;" data-type="subordinate" data-name="問題解決型" onclick="selectPerson(this)">
-                    <div class="person-label">問題解決型(S)</div>
-                </div>
-                <div class="person-point subordinate-point" style="top: 15%; right: 35%;" data-type="subordinate" data-name="自律実行型" onclick="selectPerson(this)">
-                    <div class="person-label">自律実行型(S)</div>
-                </div>
-                
-                <!-- 第2象限：密接指導型 - 高密度コミュニケーション×上司主導 -->
-                <div class="person-point subordinate-point" style="top: 15%; left: 30%;" data-type="subordinate" data-name="模範生型" onclick="selectPerson(this)">
-                    <div class="person-label">模範生型(S)</div>
-                </div>
-                <div class="person-point subordinate-point" style="top: 25%; left: 20%;" data-type="subordinate" data-name="学習型" onclick="selectPerson(this)">
-                    <div class="person-label">学習型(S)</div>
-                </div>
-                <div class="person-point subordinate-point" style="top: 30%; left: 35%;" data-type="subordinate" data-name="チームワーカー型" onclick="selectPerson(this)">
-                    <div class="person-label">チームワーカー型(S)</div>
-                </div>
-                <div class="person-point subordinate-point" style="top: 20%; left: 35%;" data-type="subordinate" data-name="調整役型" onclick="selectPerson(this)">
-                    <div class="person-label">調整役型(S)</div>
-                </div>
-                <div class="person-point subordinate-point" style="top: 10%; left: 15%;" data-type="subordinate" data-name="不安型" onclick="selectPerson(this)">
-                    <div class="person-label">不安型(S)</div>
-                </div>
-                
-                <!-- 第3象限：距離指導型 - 低密度コミュニケーション×上司主導 -->
-                <div class="person-point subordinate-point" style="bottom: 20%; left: 25%;" data-type="subordinate" data-name="指示待ち型" onclick="selectPerson(this)">
-                    <div class="person-label">指示待ち型(S)</div>
-                </div>
-                <div class="person-point subordinate-point" style="bottom: 30%; left: 35%;" data-type="subordinate" data-name="慎重型" onclick="selectPerson(this)">
-                    <div class="person-label">慎重型(S)</div>
-                </div>
-                
-                <!-- 第4象限：距離委譲型 - 低密度コミュニケーション×部下主導 -->
-                <div class="person-point subordinate-point" style="bottom: 25%; right: 30%;" data-type="subordinate" data-name="職人型" onclick="selectPerson(this)">
-                    <div class="person-label">職人型(S)</div>
-                </div>
-                <div class="person-point subordinate-point" style="bottom: 35%; right: 20%;" data-type="subordinate" data-name="独立型" onclick="selectPerson(this)">
-                    <div class="person-label">独立型(S)</div>
+            <!-- 相性マトリクス -->
+            <div class="section">
+                <h2>📋 相性マトリクス（144パターン）</h2>
+                <div class="matrix-container">
+                    <table class="matrix-table">
+                        <thead>
+                            <tr>
+                                <th class="row-header">マネージャー＼部下</th>
+                                <th class="col-header">模範生型</th>
+                                <th class="col-header">自律実行型</th>
+                                <th class="col-header">職人型</th>
+                                <th class="col-header">チームワーカー型</th>
+                                <th class="col-header">積極提案型</th>
+                                <th class="col-header">慎重型</th>
+                                <th class="col-header">学習型</th>
+                                <th class="col-header">指示待ち型</th>
+                                <th class="col-header">問題解決型</th>
+                                <th class="col-header">調整役型</th>
+                                <th class="col-header">独立型</th>
+                                <th class="col-header">不安型</th>
+                            </tr>
+                        </thead>
+                        <tbody id="matrixBody">
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>
 
-        <div class="detail-panel" id="detailPanel">
-            <div class="detail-title" id="detailTitle">タイプを選択してください</div>
+        <!-- 詳細パネル -->
+        <div class="detail-panel" id="detailPanel" style="display: none;">
+            <div class="detail-title" id="detailTitle">組み合わせを選択してください</div>
             <div id="detailContent">
-                <p>上の4象限図の点をクリックして詳細を確認し、マネージャーと部下の組み合わせを選択すると相性が表示されます。</p>
+                <p>4象限マッピングの点またはマトリクスのセルをクリックして、詳細なコミュニケーションスタイルを確認してください。</p>
             </div>
         </div>
     </div>
@@ -461,7 +513,8 @@
         let selectedManager = null;
         let selectedSubordinate = null;
         let showAllMode = false;
-        let compatibilityMode = false;
+        let syncMode = true;
+        let selectedMatrixCell = null;
 
         const managerTypes = [
             '密着指導型', '委譲成長型', '結果重視型', '協調型', '効率追求型', '安定管理型',
@@ -474,22 +527,34 @@
         ];
 
         // 相性マトリクス
-        const compatibilityMatrix = {
-            '密着指導型': {'模範生型': 4, '学習型': 4, '不安型': 4, '指示待ち型': 4, '慎重型': 4, '調整役型': 4, 'チームワーカー型': 4, '問題解決型': 3, '自律実行型': 3, '積極提案型': 3, '独立型': 2, '職人型': 2},
-            '委譲成長型': {'自律実行型': 4, '積極提案型': 4, '学習型': 4, '問題解決型': 4, 'チームワーカー型': 3, '調整役型': 3, '模範生型': 3, '職人型': 3, '独立型': 3, '慎重型': 3, '指示待ち型': 2, '不安型': 2},
-            '結果重視型': {'自律実行型': 4, '職人型': 4, '独立型': 4, '問題解決型': 4, '積極提案型': 3, '指示待ち型': 3, 'チームワーカー型': 2, '調整役型': 2, '慎重型': 2, '学習型': 2, '模範生型': 2, '不安型': 1},
-            '協調型': {'模範生型': 4, 'チームワーカー型': 4, '調整役型': 4, '学習型': 3, '積極提案型': 4, '問題解決型': 3, '自律実行型': 3, '慎重型': 3, '不安型': 3, '指示待ち型': 3, '職人型': 2, '独立型': 2},
-            '効率追求型': {'自律実行型': 4, '積極提案型': 4, '問題解決型': 4, '職人型': 3, '独立型': 3, '学習型': 3, '模範生型': 2, 'チームワーカー型': 2, '調整役型': 2, '慎重型': 2, '指示待ち型': 2, '不安型': 2},
-            '安定管理型': {'模範生型': 4, '慎重型': 4, '指示待ち型': 4, '不安型': 4, '学習型': 3, 'チームワーカー型': 3, '調整役型': 3, '職人型': 3, '問題解決型': 2, '自律実行型': 2, '積極提案型': 2, '独立型': 2},
-            'プレイヤー型': {'学習型': 4, '職人型': 4, '自律実行型': 3, '積極提案型': 3, '問題解決型': 3, '模範生型': 3, 'チームワーカー型': 3, '調整役型': 3, '独立型': 3, '慎重型': 3, '指示待ち型': 3, '不安型': 3},
-            '火消し型': {'問題解決型': 4, '自律実行型': 3, '積極提案型': 3, '職人型': 3, '独立型': 3, '学習型': 2, '模範生型': 2, 'チームワーカー型': 2, '調整役型': 2, '慎重型': 2, '指示待ち型': 2, '不安型': 2},
-            'ビジョン型': {'積極提案型': 4, '学習型': 4, '自律実行型': 4, '問題解決型': 3, 'チームワーカー型': 3, '調整役型': 3, '職人型': 2, '独立型': 3, '模範生型': 3, '慎重型': 2, '指示待ち型': 2, '不安型': 2},
-            '調整型': {'調整役型': 4, 'チームワーカー型': 4, '模範生型': 3, '学習型': 3, '積極提案型': 3, '問題解決型': 3, '自律実行型': 3, '不安型': 3, '慎重型': 3, '指示待ち型': 3, '職人型': 2, '独立型': 2},
-            '保護型': {'不安型': 4, '慎重型': 4, 'チームワーカー型': 4, '調整役型': 4, '模範生型': 3, '学習型': 3, '指示待ち型': 3, '積極提案型': 3, '自律実行型': 3, '職人型': 3, '問題解決型': 2, '独立型': 2},
-            '完璧主義型': {'模範生型': 3, '慎重型': 4, '学習型': 3, '職人型': 3, '指示待ち型': 3, '不安型': 3, 'チームワーカー型': 2, '調整役型': 2, '自律実行型': 2, '積極提案型': 2, '問題解決型': 2, '独立型': 2}
+        const compatibilityMatrix = [
+            [4, 3, 2, 4, 3, 4, 4, 4, 3, 4, 2, 4], // 密着指導型
+            [3, 4, 3, 3, 4, 3, 4, 2, 4, 3, 3, 2], // 委譲成長型
+            [2, 4, 4, 2, 3, 2, 2, 3, 4, 2, 4, 1], // 結果重視型
+            [4, 3, 2, 4, 4, 3, 3, 3, 3, 4, 2, 3], // 協調型
+            [2, 4, 3, 2, 4, 2, 3, 2, 4, 2, 3, 2], // 効率追求型
+            [4, 2, 3, 3, 2, 4, 3, 4, 2, 3, 2, 4], // 安定管理型
+            [3, 3, 4, 3, 3, 3, 4, 3, 3, 3, 3, 3], // プレイヤー型
+            [2, 3, 3, 2, 3, 2, 2, 2, 4, 2, 3, 2], // 火消し型
+            [3, 4, 2, 3, 4, 2, 4, 2, 3, 3, 3, 2], // ビジョン型
+            [3, 3, 2, 4, 3, 3, 3, 3, 3, 4, 2, 3], // 調整型
+            [3, 3, 3, 4, 3, 4, 3, 3, 2, 4, 2, 4], // 保護型
+            [3, 2, 3, 2, 2, 4, 3, 3, 2, 2, 2, 3]  // 完璧主義型
+        ];
+
+        const compatibilitySymbols = { 4: '◎', 3: '○', 2: '△', 1: '×' };
+        const compatibilityClasses = { 4: 'excellent', 3: 'good', 2: 'normal', 1: 'difficult' };
+        const compatibilityTexts = { 4: '抜群', 3: '良好', 2: '普通', 1: '困難' };
+
+        // コミュニケーションスタイルのデータベース（サンプル）
+        const communicationStyles = {
+            '密着指導型-模範生型': {
+                managerStyle: ['詳細な進捗確認を定期的に実施', '丁寧なフィードバックと成長支援', '事前相談を積極的に受け入れ', 'こまめな声かけでモチベーション維持'],
+                subordinateStyle: ['背景・経緯を含む詳細な報告', '事前相談を欠かさない', 'こまめな進捗共有', '積極的な質問と確認'],
+                tips: '理想的な組み合わせ。高密度なコミュニケーションと指導による着実な成長が期待できる。'
+            }
         };
 
-        // セレクトボックスの初期化
         function initializeSelects() {
             const managerSelect = document.getElementById('managerSelect');
             const subordinateSelect = document.getElementById('subordinateSelect');
@@ -512,29 +577,93 @@
             subordinateSelect.onchange = () => selectFromDropdown('subordinate', subordinateSelect.value);
         }
 
-        function selectFromDropdown(type, name) {
-            const points = document.querySelectorAll(`[data-type="${type}"][data-name="${name}"]`);
-            if (points.length > 0) {
-                selectPerson(points[0]);
+        function createMatrix() {
+            const tbody = document.getElementById('matrixBody');
+            
+            for (let i = 0; i < managerTypes.length; i++) {
+                const row = document.createElement('tr');
+                
+                const headerCell = document.createElement('td');
+                headerCell.className = 'row-header-cell';
+                headerCell.textContent = managerTypes[i];
+                row.appendChild(headerCell);
+                
+                for (let j = 0; j < subordinateTypes.length; j++) {
+                    const cell = document.createElement('td');
+                    const value = compatibilityMatrix[i][j];
+                    cell.textContent = compatibilitySymbols[value];
+                    cell.className = compatibilityClasses[value];
+                    cell.dataset.manager = managerTypes[i];
+                    cell.dataset.subordinate = subordinateTypes[j];
+                    cell.dataset.managerIndex = i;
+                    cell.dataset.subordinateIndex = j;
+                    cell.onclick = () => selectFromMatrix(cell, i, j);
+                    row.appendChild(cell);
+                }
+                
+                tbody.appendChild(row);
             }
         }
 
-        function selectPerson(element) {
+        function selectFromDropdown(type, name) {
+            if (!name) return;
+            
+            if (type === 'manager') {
+                selectedManager = name;
+                // 4象限の点を選択
+                const points = document.querySelectorAll(`[data-type="manager"][data-name="${name}"]`);
+                document.querySelectorAll('.manager-point').forEach(p => p.classList.remove('selected'));
+                if (points.length > 0) points[0].classList.add('selected');
+            } else {
+                selectedSubordinate = name;
+                const points = document.querySelectorAll(`[data-type="subordinate"][data-name="${name}"]`);
+                document.querySelectorAll('.subordinate-point').forEach(p => p.classList.remove('selected'));
+                if (points.length > 0) points[0].classList.add('selected');
+            }
+            
+            updateDisplay();
+        }
+
+        function selectFromQuadrant(element) {
             const type = element.dataset.type;
             const name = element.dataset.name;
 
-            // 前の選択をクリア
             if (type === 'manager') {
-                if (selectedManager) selectedManager.classList.remove('selected');
-                selectedManager = element;
+                selectedManager = name;
                 document.getElementById('managerSelect').value = name;
+                document.querySelectorAll('.manager-point').forEach(p => p.classList.remove('selected'));
             } else {
-                if (selectedSubordinate) selectedSubordinate.classList.remove('selected');
-                selectedSubordinate = element;
+                selectedSubordinate = name;
                 document.getElementById('subordinateSelect').value = name;
+                document.querySelectorAll('.subordinate-point').forEach(p => p.classList.remove('selected'));
             }
 
             element.classList.add('selected');
+            updateDisplay();
+        }
+
+        function selectFromMatrix(cell, managerIndex, subordinateIndex) {
+            const managerName = managerTypes[managerIndex];
+            const subordinateName = subordinateTypes[subordinateIndex];
+            
+            // 前の選択をクリア
+            if (selectedMatrixCell) selectedMatrixCell.classList.remove('selected');
+            selectedMatrixCell = cell;
+            cell.classList.add('selected');
+            
+            selectedManager = managerName;
+            selectedSubordinate = subordinateName;
+            
+            // ドロップダウンを更新
+            document.getElementById('managerSelect').value = managerName;
+            document.getElementById('subordinateSelect').value = subordinateName;
+            
+            if (syncMode) {
+                // 4象限の点も更新
+                document.querySelectorAll('.person-point').forEach(p => p.classList.remove('selected'));
+                document.querySelectorAll(`[data-name="${managerName}"]`).forEach(p => p.classList.add('selected'));
+                document.querySelectorAll(`[data-name="${subordinateName}"]`).forEach(p => p.classList.add('selected'));
+            }
             
             updateDisplay();
         }
@@ -544,17 +673,24 @@
             document.querySelectorAll('.compatibility-line').forEach(line => line.remove());
 
             if (selectedManager && selectedSubordinate) {
-                drawCompatibilityLine();
-                showCompatibilityDetail();
+                if (syncMode) {
+                    drawCompatibilityLine();
+                }
+                showCombinationDetail();
             }
 
             updateVisibility();
         }
 
         function drawCompatibilityLine() {
-            const managerRect = selectedManager.getBoundingClientRect();
-            const subordinateRect = selectedSubordinate.getBoundingClientRect();
-            const containerRect = document.querySelector('.quadrant-grid').getBoundingClientRect();
+            const managerPoint = document.querySelector(`[data-type="manager"][data-name="${selectedManager}"]`);
+            const subordinatePoint = document.querySelector(`[data-type="subordinate"][data-name="${selectedSubordinate}"]`);
+            
+            if (!managerPoint || !subordinatePoint) return;
+
+            const managerRect = managerPoint.getBoundingClientRect();
+            const subordinateRect = subordinatePoint.getBoundingClientRect();
+            const containerRect = document.querySelector('.quadrant-container').getBoundingClientRect();
 
             const managerX = managerRect.left + managerRect.width/2 - containerRect.left;
             const managerY = managerRect.top + managerRect.height/2 - containerRect.top;
@@ -569,10 +705,9 @@
             const line = document.createElement('div');
             line.className = 'compatibility-line';
             
-            // 相性レベルを取得
-            const managerName = selectedManager.dataset.name;
-            const subordinateName = selectedSubordinate.dataset.name;
-            const compatibility = compatibilityMatrix[managerName]?.[subordinateName] || 2;
+            const managerIndex = managerTypes.indexOf(selectedManager);
+            const subordinateIndex = subordinateTypes.indexOf(selectedSubordinate);
+            const compatibility = compatibilityMatrix[managerIndex][subordinateIndex];
             
             if (compatibility === 4) line.classList.add('compatibility-excellent');
             else if (compatibility === 3) line.classList.add('compatibility-good');
@@ -584,89 +719,89 @@
             line.style.width = distance + 'px';
             line.style.transform = `rotate(${angle}deg)`;
 
-            document.querySelector('.quadrant-grid').appendChild(line);
+            document.querySelector('.quadrant-container').appendChild(line);
         }
 
-        function showCompatibilityDetail() {
-            const managerName = selectedManager.dataset.name;
-            const subordinateName = selectedSubordinate.dataset.name;
-            const compatibility = compatibilityMatrix[managerName]?.[subordinateName] || 2;
+        function showCombinationDetail() {
+            const managerIndex = managerTypes.indexOf(selectedManager);
+            const subordinateIndex = subordinateTypes.indexOf(selectedSubordinate);
+            const compatibility = compatibilityMatrix[managerIndex][subordinateIndex];
             
-            const compatibilityTexts = {4: '抜群', 3: '良好', 2: '普通', 1: '困難'};
-            const compatibilitySymbols = {4: '◎', 3: '○', 2: '△', 1: '×'};
-
-            // 距離の計算
-            const managerRect = selectedManager.getBoundingClientRect();
-            const subordinateRect = selectedSubordinate.getBoundingClientRect();
-            const deltaX = subordinateRect.left - managerRect.left;
-            const deltaY = subordinateRect.top - managerRect.top;
-            const distance = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
+            const key = `${selectedManager}-${selectedSubordinate}`;
+            const style = communicationStyles[key] || generateDefaultStyle(compatibility);
 
             const panel = document.getElementById('detailPanel');
             const title = document.getElementById('detailTitle');
             const content = document.getElementById('detailContent');
 
-            title.innerHTML = `${managerName} × ${subordinateName}`;
+            title.innerHTML = `${selectedManager} × ${selectedSubordinate}`;
 
             content.innerHTML = `
                 <div class="compatibility-info">
-                    <h4>相性評価: ${compatibilitySymbols[compatibility]} ${compatibilityTexts[compatibility]}</h4>
-                    <span class="distance-info">4象限距離: ${Math.round(distance)}px (近いほどコミュニケーションスタイルが類似)</span>
+                    <div class="compatibility-score ${compatibilityClasses[compatibility]}">
+                        ${compatibilitySymbols[compatibility]} ${compatibilityTexts[compatibility]}
+                    </div>
+                    <p>4象限位置: ${getQuadrantInfo(selectedManager, selectedSubordinate)}</p>
                 </div>
-                <div class="characteristics">
-                    <p><strong>組み合わせの特徴:</strong></p>
-                    <p>${getCompatibilityDescription(managerName, subordinateName, compatibility)}</p>
-                    <p><strong>新軸での位置関係:</strong></p>
-                    <p>${getQuadrantAnalysis(managerName, subordinateName)}</p>
+                <div class="detail-content">
+                    <div class="communication-style">
+                        <h4>📋 マネージャー側のアプローチ</h4>
+                        <ul class="style-list">
+                            ${style.managerStyle.map(item => `<li>${item}</li>`).join('')}
+                        </ul>
+                    </div>
+                    <div class="communication-style">
+                        <h4>👤 部下側の対応スタイル</h4>
+                        <ul class="style-list">
+                            ${style.subordinateStyle.map(item => `<li>${item}</li>`).join('')}
+                        </ul>
+                    </div>
+                </div>
+                <div class="communication-style" style="margin-top: 15px;">
+                    <h4>💡 相性活用のコツ</h4>
+                    <p>${style.tips}</p>
                 </div>
             `;
 
             panel.style.display = 'block';
         }
 
-        function getCompatibilityDescription(manager, subordinate, compatibility) {
+        function generateDefaultStyle(compatibility) {
+            let tips = '';
             if (compatibility === 4) {
-                return `${manager}と${subordinate}は非常に相性が良く、コミュニケーション密度と主導権のバランスが理想的です。自然でスムーズな関係が築け、高い成果と満足度が期待できます。`;
+                tips = '非常に相性が良く、コミュニケーション密度と主導権のバランスが理想的です。';
             } else if (compatibility === 3) {
-                return `${manager}と${subordinate}は良好な相性です。コミュニケーションスタイルが合致しており、お互いを理解しやすい関係です。`;
+                tips = '良好な相性です。コミュニケーションスタイルの調整で更に良い関係を築けます。';
             } else if (compatibility === 2) {
-                return `${manager}と${subordinate}は工夫が必要な組み合わせです。コミュニケーション密度や主導権の取り方について、お互いの調整が必要です。`;
+                tips = '工夫が必要な組み合わせです。お互いの特徴を理解し合うことが重要です。';
             } else {
-                return `${manager}と${subordinate}はコミュニケーションスタイルの違いが大きい組み合わせです。密度や主導権について特別な配慮と工夫が必要です。`;
+                tips = 'コミュニケーションスタイルの違いが大きい組み合わせです。特別な配慮が必要です。';
             }
-        }
 
-        function getQuadrantAnalysis(manager, subordinate) {
-            const managerQuadrant = getQuadrantFromName(manager, 'manager');
-            const subordinateQuadrant = getQuadrantFromName(subordinate, 'subordinate');
-            
-            if (managerQuadrant === subordinateQuadrant) {
-                return `両者とも同じ象限（${managerQuadrant}）にあり、コミュニケーション密度と主導権の考え方が一致しています。`;
-            } else {
-                return `マネージャーは${managerQuadrant}、部下は${subordinateQuadrant}にあり、コミュニケーションスタイルの調整が必要です。`;
-            }
-        }
-
-        function getQuadrantFromName(name, type) {
-            // 配置位置から象限を判定（簡略化）
-            const quadrants = {
-                '第1象限': '密接委譲型（高密度×部下主導）',
-                '第2象限': '密接指導型（高密度×上司主導）',
-                '第3象限': '距離指導型（低密度×上司主導）',
-                '第4象限': '距離委譲型（低密度×部下主導）'
+            return {
+                managerStyle: ['状況に応じた柔軟なアプローチ', '部下の特性を理解した指導', '適切な距離感の維持'],
+                subordinateStyle: ['マネージャーのスタイルに合わせた対応', '積極的なコミュニケーション', '相互理解の促進'],
+                tips: tips
             };
-            
-            // マネージャーの象限分類
+        }
+
+        function getQuadrantInfo(manager, subordinate) {
+            const mQuad = getPersonQuadrant(manager, 'manager');
+            const sQuad = getPersonQuadrant(subordinate, 'subordinate');
+            return `M:${mQuad} / S:${sQuad}`;
+        }
+
+        function getPersonQuadrant(name, type) {
             if (type === 'manager') {
-                if (['委譲成長型', '協調型', 'ビジョン型', 'プレイヤー型'].includes(name)) return quadrants['第1象限'];
-                if (['密着指導型', '安定管理型', '完璧主義型', '保護型'].includes(name)) return quadrants['第2象限'];
-                if (['効率追求型', '火消し型'].includes(name)) return quadrants['第3象限'];
-                if (['結果重視型', '調整型'].includes(name)) return quadrants['第4象限'];
+                if (['委譲成長型', '協調型', 'ビジョン型', 'プレイヤー型'].includes(name)) return '密接委譲';
+                if (['密着指導型', '安定管理型', '完璧主義型', '保護型'].includes(name)) return '密接指導';
+                if (['効率追求型', '火消し型'].includes(name)) return '距離指導';
+                if (['結果重視型', '調整型'].includes(name)) return '距離委譲';
             } else {
-                if (['積極提案型', '問題解決型', '自律実行型'].includes(name)) return quadrants['第1象限'];
-                if (['模範生型', '学習型', 'チームワーカー型', '調整役型', '不安型'].includes(name)) return quadrants['第2象限'];
-                if (['指示待ち型', '慎重型'].includes(name)) return quadrants['第3象限'];
-                if (['職人型', '独立型'].includes(name)) return quadrants['第4象限'];
+                if (['積極提案型', '問題解決型', '自律実行型'].includes(name)) return '密接委譲';
+                if (['模範生型', '学習型', 'チームワーカー型', '調整役型', '不安型'].includes(name)) return '密接指導';
+                if (['指示待ち型', '慎重型'].includes(name)) return '距離指導';
+                if (['職人型', '独立型'].includes(name)) return '距離委譲';
             }
             return '不明';
         }
@@ -674,69 +809,17 @@
         function toggleShowAll() {
             showAllMode = !showAllMode;
             const btn = document.getElementById('showAllBtn');
-            btn.textContent = showAllMode ? '選択表示' : '全タイプ表示';
+            btn.textContent = showAllMode ? '選択表示' : '全表示';
             btn.classList.toggle('active', showAllMode);
             updateVisibility();
         }
 
-        function toggleCompatibilityMode() {
-            compatibilityMode = !compatibilityMode;
-            const btn = document.getElementById('compatibilityBtn');
-            btn.textContent = compatibilityMode ? '通常モード' : '相性表示モード';
-            btn.classList.toggle('active', compatibilityMode);
-            
-            if (compatibilityMode && selectedManager) {
-                showAllCompatibilities();
-            } else {
-                document.querySelectorAll('.compatibility-line').forEach(line => line.remove());
-            }
-        }
-
-        function showAllCompatibilities() {
-            if (!selectedManager) return;
-            
-            document.querySelectorAll('.compatibility-line').forEach(line => line.remove());
-            
-            const managerName = selectedManager.dataset.name;
-            const subordinatePoints = document.querySelectorAll('[data-type="subordinate"]');
-            
-            subordinatePoints.forEach(point => {
-                const subordinateName = point.dataset.name;
-                const compatibility = compatibilityMatrix[managerName]?.[subordinateName] || 2;
-                
-                drawLineBetweenPoints(selectedManager, point, compatibility);
-            });
-        }
-
-        function drawLineBetweenPoints(point1, point2, compatibility) {
-            const rect1 = point1.getBoundingClientRect();
-            const rect2 = point2.getBoundingClientRect();
-            const containerRect = document.querySelector('.quadrant-grid').getBoundingClientRect();
-
-            const x1 = rect1.left + rect1.width/2 - containerRect.left;
-            const y1 = rect1.top + rect1.height/2 - containerRect.top;
-            const x2 = rect2.left + rect2.width/2 - containerRect.left;
-            const y2 = rect2.top + rect2.height/2 - containerRect.top;
-
-            const deltaX = x2 - x1;
-            const deltaY = y2 - y1;
-            const distance = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
-            const angle = Math.atan2(deltaY, deltaX) * 180 / Math.PI;
-
-            const line = document.createElement('div');
-            line.className = 'compatibility-line';
-            
-            if (compatibility === 4) line.classList.add('compatibility-excellent');
-            else if (compatibility === 3) line.classList.add('compatibility-good');
-            else if (compatibility === 2) line.classList.add('compatibility-normal');
-            else line.classList.add('compatibility-difficult');
-
-            line.style.left = x1 + 'px';
-            line.style.top = y1 + 'px';
-            line.style.width = distance + 'px';
-            line.style.transform = `rotate(${angle}deg)`;
-
-            document.querySelector('.quadrant-grid').appendChild(line);
+        function toggleSync() {
+            syncMode = !syncMode;
+            const btn = document.getElementById('syncBtn');
+            btn.textContent = syncMode ? '連動OFF' : '連動表示';
+            btn.classList.toggle('active', !syncMode);
+            updateDisplay();
         }
 
         function updateVisibility() {
@@ -746,7 +829,8 @@
                 allPoints.forEach(point => point.style.display = 'block');
             } else {
                 allPoints.forEach(point => {
-                    if (point === selectedManager || point === selectedSubordinate) {
+                    const name = point.dataset.name;
+                    if (name === selectedManager || name === selectedSubordinate) {
                         point.style.display = 'block';
                     } else {
                         point.style.display = 'none';
@@ -757,6 +841,7 @@
 
         // 初期化
         initializeSelects();
+        createMatrix();
         updateVisibility();
     </script>
 </body>
