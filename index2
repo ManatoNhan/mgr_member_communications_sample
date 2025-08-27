@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>新マネージャータイプ別レーダーチャート（16タイプ・8軸版）</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+    <style>
+        body {
+            font-family: 'Hiragino Sans', 'Yu Gothic', sans-serif;
+            margin: 20px;
+            background: #f8f9fa;
+        }
+        .container {
+            max-width: 1600px;
+            margin: 0 auto;
+        }
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+            margin-bottom: 40px;
+        }
+        .chart-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(380px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+        .chart-container {
+            background: white;
+            border-radius: 12px;
+            padding: 18px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            border: 1px solid #e1e8ed;
+        }
+        .chart-wrapper {
+            width: 320px;
+            height: 320px;
+            margin: 0 auto 15px;
+        }
+        .chart-title {
+            text-align: center;
+            font-size: 16px;
+            font-weight: bold;
+            color: #2c3e50;
+            margin-bottom: 12px;
+        }
+        .chart-description {
+            font-size: 11px;
+            line-height: 1.4;
+            color: #34495e;
+        }
+        .chart-description ul {
+            margin: 5px 0;
+            padding-left: 16px;
+        }
+        .chart-description li {
+            margin-bottom: 3px;
+        }
+        .chart-description .section {
+            margin-bottom: 8px;
+        }
+        .legend {
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        .legend h3 {
+            margin-top: 0;
+            color: #2c3e50;
+        }
+        .legend-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 15px;
+        }
+        .legend-item {
+            font-size: 13px;
+            color: #34495e;
+        }
+        .hybrid-section {
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 2px solid #3498db;
+        }
+        .hybrid-title {
+            text-align: center;
+            font-size: 20px;
+            color: #2c3e50;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>新マネージャータイプ別レーダーチャート（16タイプ・8軸版）</h1>
+        
+        <div class="legend">
+            <h3>8軸評価基準</h3>
+            <div class="legend-grid">
+                <div class="legend-item"><strong>関与度:</strong> 部下の業務への関わりの深さ（低い↔高い）</div>
+                <div class="legend-item"><strong>柔軟性:</strong> ルールや方針の融通の利きやすさ（厳格↔寛容）</div>
+                <div class="legend-item"><strong>情報志向:</strong> 求める情報の詳細さ（要点↔詳細）</div>
+                <div class="legend-item"><strong>決定スタイル:</strong> 意思決定の方法（指示↔委譲）</div>
+                <div class="legend-item"><strong>コミュニケーション頻度:</strong> やりとりの頻度（低い↔高い）</div>
+                <div class="legend-item"><strong>革新性:</strong> 変化や新しい取り組みへの姿勢（保守的↔革新的）</div>
+                <div class="legend-item"><strong>専門性重視度:</strong> 専門知識の重要視（ゼネラリスト↔スペシャリスト）</div>
+                <div class="legend-item"><strong>外部志向度:</strong> 関心の方向性（内部組織重視↔顧客・外部重視）</div>
+            </div>
+        </div>
+
+        <div class="chart-grid">
+            <!-- 基本12タイプ -->
+            <div class="chart-container">
+                <div class="chart-title">ハンズオン指導型</div>
+                <div class="chart-wrapper">
+                    <canvas id="chart1"></canvas>
+                </div>
+                <div class="chart-description">
+                    <div class="section"><strong>基本特徴:</strong> 実務経験豊富で技術指導が得意。段階的指導を重視</div>
+                    <div class="section"><strong>8軸特徴:</strong> 高関与・高情報・高コミュ・高専門・内部重視</div>
+                </div>
+            </div>
+
+            <div class="chart-container">
+                <div class="chart-title">委任成長型</div>
+                <div class="chart-wrapper">
+                    <canvas id="chart2"></canvas>
+                </div>
+                <div class="chart-description">
+                    <div class="section"><strong>基本特徴:</strong> 部下の自主性を最大限尊重、失敗を学習機会と捉える</div>
+                    <div class="section"><strong>8軸特徴:</strong> 中関与・高柔軟・要点志向・委譲・高革新・ゼネラリスト</div>
+                </div>
+            </div>
+
+            <div class="chart-container">
+                <div class="chart-title">データ重視型</div>
+                <div class="chart-wrapper">
+                    <canvas id="chart3"></canvas>
+                </div>
+                <div class="chart-description">
+                    <div class="section"><strong>基本特徴:</strong> 数値・データに基づく判断を重視、ROI・KPI重視</div>
+                    <div class="section"><strong>8軸特徴:</strong> 低関与・厳格・要点志向・指示・低コミュ・中革新・データ専門</div>
+                </div>
+            </div>
+
+            <div class="chart-container">
+                <div class="chart-title">チーム協調型</div>
+                <div class="chart-wrapper">
+                    <canvas id="chart4"></canvas>
+                </div>
+                <div class="chart-description">
+                    <div class="section"><strong>基本特徴:</strong> チーム全体での議論を重視、合意形成を大切にする</div>
+                    <div class="section"><strong>8軸特徴:</strong> 高関与・高柔軟・詳細志向・協議・高コミュ・中革新・内部重視</div>
+                </div>
+            </div>
+
+            <div class="chart-container">
+                <div class="chart-title">効率最適化型</div>
+                <div class="chart-wrapper">
+                    <canvas id="chart5"></canvas>
+                </div>
+                <div class="chart-description">
+                    <div class="section"><strong>基本特徴:</strong> 時間効率を最重視、無駄の徹底排除</div>
+                    <div class="section"><strong>8軸特徴:</strong> 低関与・中柔軟・要点志向・指示・低コミュ・高革新・効率専門</div>
+                </div>
+            </div>
+
+            <div class="chart-container">
+                <div class="chart-title">安定運営型</div>
+                <div class="chart-wrapper">
+                    <canvas id="chart6"></canvas>
+                </div>
+                <div class="chart-description">
+                    <div class="section"><strong>基本特徴:</strong> 確実性・安定性を最重視、慎重判断</div>
+                    <div class="section"><strong>8軸特徴:</strong> 高関与・厳格・詳細志向・指示・中コミュ・低革新・内部重視</div>
+                </div>
+            </div>
+
+            <div class="chart-container">
+                <div class="chart-title">危機対応型</div>
+                <div class="chart-wrapper">
+                    <canvas id="chart7"></canvas>
+                </div>
+                <div class="chart-description">
+                    <div class="section"><strong>基本特徴:</strong> 緊急時の対応力に長ける、迅速な判断と実行</div>
+                    <div class="section"><strong>8軸特徴:</strong> 低関与・高柔軟・要点志向・状況判断・変動コミュ・高革新</div>
+                </div>
+            </div>
+
+            <div class="chart-container">
+                <div class="chart-title">保護支援型</div>
+                <div class="chart-wrapper">
+                    <canvas id="chart8"></canvas>
+                </div>
+                <div class="chart-description">
+                    <div class="section"><strong>基本特徴:</strong> 部下を外部圧力から守る、心理的安全性重視</div>
+                    <div class="section"><strong>8軸特徴:</strong> 高関与・高柔軟・中情報・協議・高コミュ・低革新・内部重視</div>
+                </div>
+            </div>
+
+            <div class="chart-container">
+                <div class="chart-title">権威統制型</div>
+                <div class="chart-wrapper">
+                    <canvas id="chart9"></canvas>
+                </div>
+                <div class="chart-description">
+                    <div class="section"><strong>基本特徴:</strong> 明確な上下関係・階層を重視、命令・指示による統制</div>
+                    <div class="section"><strong>8軸特徴:</strong> 高関与・厳格・詳細志向・指示・中コミュ・低革新・階層専門・内部重視</div>
+                </div>
+            </div>
+
+            <div class="chart-container">
+                <div class="chart-title">技術専門特化型</div>
+                <div class="chart-wrapper">
+                    <canvas id="chart10"></canvas>
+                </div>
+                <div class="chart-description">
+                    <div class="section"><strong>基本特徴:</strong> 技術的専門性が判断の最優先基準</div>
+                    <div class="section"><strong>8軸特徴:</strong> 高関与・厳格・詳細志向・指示・中コミュ・中革新・技術専門特化・内部重視</div>
+                </div>
+            </div>
+
+            <div class="chart-container">
+                <div class="chart-title">顧客第一主義型</div>
+                <div class="chart-wrapper">
+                    <canvas id="chart11"></canvas>
+                </div>
+                <div class="chart-description">
+                    <div class="section"><strong>基本特徴:</strong> 顧客満足度が全判断の最優先基準</div>
+                    <div class="section"><strong>8軸特徴:</strong> 中関与・高柔軟・中情報・協議・高コミュ・高革新・顧客専門・外部重視特化</div>
+                </div>
+            </div>
+
+            <div class="chart-container">
+                <div class="chart-title">カリスマビジョナリー型</div>
+                <div class="chart-wrapper">
+                    <canvas id="chart12"></canvas>
+                </div>
+                <div class="chart-description">
+                    <div class="section"><strong>基本特徴:</strong> 大きな理想・ビジョンの提示が得意</div>
+                    <div class="section"><strong>8軸特徴:</strong> 低関与・高柔軟・要点志向・委譲・中コミュ・最高革新・ビジョン専門・外部重視</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="hybrid-section">
+            <div class="hybrid-title">ハイブリッドタイプ（4タイプ）</div>
+            <div class="chart-grid">
+                <div class="chart-container">
+                    <div class="chart-title">戦略プレイヤー型</div>
+                    <div class="chart-wrapper">
+                        <canvas id="chart13"></canvas>
+                    </div>
+                    <div class="chart-description">
+                        <div class="section"><strong>基本特徴:</strong> ハンズオン指導型×データ重視型の統合</div>
+                        <div class="section"><strong>8軸特徴:</strong> 中関与・中柔軟・中情報・指示・中コミュ・中革新・技術×データ専門・内部重視</div>
+                    </div>
+                </div>
+
+                <div class="chart-container">
+                    <div class="chart-title">成長促進型</div>
+                    <div class="chart-wrapper">
+                        <canvas id="chart14"></canvas>
+                    </div>
+                    <div class="chart-description">
+                        <div class="section"><strong>基本特徴:</strong> 委任成長型×チーム協調型の統合</div>
+                        <div class="section"><strong>8軸特徴:</strong> 高関与・高柔軟・中情報・協議委譲・高コミュ・高革新・人材育成専門・内部重視</div>
+                    </div>
+                </div>
+
+                <div class="chart-container">
+                    <div class="chart-title">変革推進型</div>
+                    <div class="chart-wrapper">
+                        <canvas id="chart15"></canvas>
+                    </div>
+                    <div class="chart-description">
+                        <div class="section"><strong>基本特徴:</strong> 効率最適化型×危機対応型の統合</div>
+                        <div class="section"><strong>8軸特徴:</strong> 低関与・高柔軟・要点志向・指示・低コミュ・最高革新・変革専門・外部重視</div>
+                    </div>
+                </div>
+
+                <div class="chart-container">
+                    <div class="chart-title">バランス統合型</div>
+                    <div class="chart-wrapper">
+                        <canvas id="chart16"></canvas>
+                    </div>
+                    <div class="chart-description">
+                        <div class="section"><strong>基本特徴:</strong> 安定運営型×保護支援型の統合</div>
+                        <div class="section"><strong>8軸特徴:</strong> 最高関与・中柔軟・詳細志向・指示協議・高コミュ・低革新・統合管理専門・内部重視</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const chartConfig = {
+            type: 'radar',
+            options: {
+                responsive: true,
+                maintainAspectRatio: true,
+                scales: {
+                    r: {
+                        beginAtZero: true,
+                        max: 5,
+                        min: 0,
+                        ticks: {
+                            stepSize: 1,
+                            display: false
+                        },
+                        grid: {
+                            color: '#e1e8ed'
+                        },
+                        angleLines: {
+                            color: '#e1e8ed'
+                        },
+                        pointLabels: {
+                            font: {
+                                size: 9
+                            },
+                            color: '#2c3e50'
+                        }
+                    }
+                },
+                plugins: {
+                    legend: {
+                        display: false
+                    }
+                }
+            }
+        };
+
+        const labels = ['関与度', '柔軟性', '情報志向', '決定スタイル', 'コミュ頻度', '革新性', '専門性重視', '外部志向'];
+        
+        const colors = [
+            'rgba(52, 152, 219, 1)',   // 青
+            'rgba(46, 204, 113, 1)',   // 緑
+            'rgba(231, 76, 60, 1)',    // 赤
+            'rgba(155, 89, 182, 1)',   // 紫
+            'rgba(243, 156, 18, 1)',   // オレンジ
+            'rgba(52, 73, 94, 1)',     // ダークグレー
+            'rgba(26, 188, 156, 1)',   // ターコイズ
+            'rgba(230, 126, 34, 1)',   // カロット
+            'rgba(149, 165, 166, 1)',  // グレー
+            'rgba(142, 68, 173, 1)',   // 濃い紫
+            'rgba(39, 174, 96, 1)',    // エメラルド
+            'rgba(192, 57, 43, 1)',    // 濃い赤
+            'rgba(22, 160, 133, 1)',   // ダークターコイズ
+            'rgba(211, 84, 0, 1)',     // ダークオレンジ
+            'rgba(125, 60, 152, 1)',   // ダーク紫
+            'rgba(191, 191, 191, 1)'   // ライトグレー
+        ];
+
+        const datasets = [
+            // 関与度, 柔軟性, 情報志向, 決定スタイル, コミュ頻度, 革新性, 専門性重視, 外部志向
+            [4, 3, 4, 2, 4, 2, 4, 2], // ハンズオン指導型
+            [3, 4, 2, 4, 3, 4, 2, 2], // 委任成長型
+            [2, 2, 2, 1, 2, 3, 4, 2], // データ重視型
+            [4, 4, 4, 3, 4, 3, 2, 2], // チーム協調型
+            [2, 3, 2, 1, 2, 4, 4, 2], // 効率最適化型
+            [4, 2, 4, 1, 3, 1, 2, 1], // 安定運営型
+            [2, 4, 2, 2, 3, 4, 3, 3], // 危機対応型
+            [4, 4, 3, 3, 4, 2, 2, 1], // 保護支援型
+            [4, 1, 4, 1, 3, 1, 3, 1], // 権威統制型
+            [4, 2, 5, 1, 3, 2, 5, 1], // 技術専門特化型
+            [3, 4, 3, 3, 4, 4, 4, 5], // 顧客第一主義型
+            [2, 4, 2, 4, 3, 5, 3, 4], // カリスマビジョナリー型
+            [3, 2.5, 3, 1.5, 3, 2.5, 4, 2], // 戦略プレイヤー型
+            [3.5, 4, 3, 3.5, 3.5, 3.5, 2, 2], // 成長促進型
+            [2, 3.5, 2, 1.5, 2.5, 4, 3.5, 2.5], // 変革推進型
+            [4, 3, 3.5, 2, 3.5, 1.5, 2, 1] // バランス統合型
+        ];
+
+        // チャートを生成
+        for (let i = 0; i < 16; i++) {
+            new Chart(document.getElementById(`chart${i + 1}`), {
+                ...chartConfig,
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        data: datasets[i],
+                        backgroundColor: colors[i].replace('1)', '0.2)'),
+                        borderColor: colors[i],
+                        borderWidth: 2
+                    }]
+                }
+            });
+        }
+    </script>
+</body>
+</html>
